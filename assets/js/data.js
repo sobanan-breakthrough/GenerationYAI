@@ -136,5 +136,40 @@ window.GY_DATA = {
     { icon: "🤝", area: "Inclusive recruitment & hiring", how: "The passport gives employers a fairer signal than a CV, and the matching layer connects to partner apprenticeships and roles." },
     { icon: "🧭", area: "Careers guidance & mentoring", how: "The companion coaches and reflects real next steps live, with a human mentor in the loop when a person is what's needed." },
     { icon: "💛", area: "Wellbeing & essential support", how: "Strength-based throughout, agency and self-efficacy measured, and a human alerted when a young person needs support — not a product." }
+  ],
+
+  /* ---- Ready-made associates for an instant, reliable live demo.
+     Real-feeling urban UK youth; baselines start low on agency. ---- */
+  personas: [
+    { name: "Marcus", city: "Birmingham", age: 19,
+      start: "Never really used AI — didn't think it was for someone like me",
+      goal: "Start my own clothing brand",
+      baseline: [3, 2, 2, 2, 1, 2] },
+    { name: "Amara", city: "London", age: 17,
+      start: "Used ChatGPT a bit for college, but that's it",
+      goal: "Get into a job in tech — I just don't know how",
+      baseline: [3, 3, 2, 2, 2, 2] },
+    { name: "Kai", city: "Manchester", age: 20,
+      start: "Not for people like me — I've got a record",
+      goal: "Prove I can build something, and show my little brother it's possible",
+      baseline: [2, 2, 2, 1, 1, 1] }
+  ],
+
+  /* Quick project ideas — chips that spark the build. */
+  projectIdeas: [
+    "A helper for my clothing brand",
+    "Something to help me find work",
+    "A tutor for my college work",
+    "A tool to plan my content",
+    "Help writing my CV",
+    "A budgeting buddy"
+  ],
+
+  /* ---- Measurement rigour: how we measure agency ---- */
+  methodology: [
+    { t: "A self-efficacy scale", d: "Six items adapted from established general self-efficacy research — the belief you can act and reach goals, a validated driver of social mobility." },
+    { t: "Entry and exit, every time", d: "Captured at the start and end of the loop for every associate — so distance travelled is measured, not assumed." },
+    { t: "Embedded, not surveyed", d: "The check-in is part of the experience, which is why completion is near-total rather than the low return of a bolt-on survey." },
+    { t: "Triangulated", d: "The quantitative shift sits alongside what was built, qualitative reflection, and 6- and 12-month progression follow-up." }
   ]
 };

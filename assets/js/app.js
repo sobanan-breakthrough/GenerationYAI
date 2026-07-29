@@ -238,6 +238,23 @@
       <div class="step-eyebrow"><span class="eyebrow">Step 1 of 6 · Welcome</span></div>
       <h2>Let's start with you.</h2>
       <p>No right answers here. This just helps your companion meet you where you are. You'll always be treated as an associate — a capable adult with something to build.</p>
+
+      <div class="card demo-launcher no-print">
+        <div class="flex flex-wrap" style="justify-content:space-between;align-items:baseline;gap:.5rem">
+          <div><span class="eyebrow">Just here to look? Start in one tap</span><h3 class="mb-0" style="font-size:1.05rem">Step into a ready-made associate</h3></div>
+        </div>
+        <div class="grid grid-3 mt-1" style="gap:.7rem">
+          ${D.personas.map((pn, i) => `
+            <button class="persona" data-i="${i}">
+              <strong>${esc(pn.name)}, ${pn.age}</strong>
+              <span class="muted">${esc(pn.city)}</span>
+              <span class="persona-goal">“${esc(pn.goal)}”</span>
+            </button>`).join("")}
+        </div>
+      </div>
+
+      <p class="center muted" style="margin:1.2rem 0 .6rem">— or set yourself up —</p>
+
       <div class="card stack">
         <div>
           <label class="field-label" for="nm">What should we call you?</label>
@@ -261,6 +278,12 @@
       S.goal = document.getElementById("gl").value.trim();
       save(); goStep(1);
     };
+    document.querySelectorAll(".persona").forEach(b => b.onclick = () => {
+      const pn = D.personas[+b.dataset.i];
+      S.name = pn.name; S.startingPoint = pn.start; S.goal = pn.goal;
+      S.baseline = pn.baseline.slice();
+      save(); goStep(1);
+    });
   }
 
   /* ---------- Steps 1 & 4: Agency check-in ---------- */
@@ -355,8 +378,10 @@ When all three are settled, also append [[READY]]. Never mention the tags or the
       <div class="card">
         <div class="chat">
           <div class="chat-log" id="log"></div>
+          <div class="ideas no-print" id="ideas"></div>
           <div class="composer">
             <textarea id="ci" placeholder="Type your reply…" rows="1"></textarea>
+            <button class="btn btn-ghost mic" id="mic" title="Talk instead of type" aria-label="Voice input">🎤</button>
             <button class="btn btn-primary" id="send">Send</button>
           </div>
         </div>
@@ -366,6 +391,8 @@ When all three are settled, also append [[READY]]. Never mention the tags or the
         <button class="btn btn-dark hidden" id="toTool">Build my tool →</button>
       </div>`;
     renderMilestones();
+    renderIdeas();
+    wireMic("mic", "ci");
     document.getElementById("backB").onclick = () => goStep(1);
     document.getElementById("toTool").onclick = buildTheTool;
 
@@ -392,6 +419,44 @@ When all three are settled, also append [[READY]]. Never mention the tags or the
         <span class="box">${S.milestones[m.id] ? "✓" : ""}</span>
         <span class="lbl">${esc(m.label)}</span>
       </div>`).join("");
+  }
+
+  function renderIdeas() {
+    const box = document.getElementById("ideas");
+    if (!box) return;
+    const userTurns = S.buildChat.filter(m => m.role === "user").length;
+    if (userTurns >= 1) { box.innerHTML = ""; return; }
+    box.innerHTML = `<span class="ideas-label">Not sure? Tap an idea:</span>` +
+      D.projectIdeas.map(t => `<button class="chip" type="button">${esc(t)}</button>`).join("");
+    box.querySelectorAll(".chip").forEach(c => c.onclick = () => {
+      const ci = document.getElementById("ci");
+      ci.value = c.textContent; ci.focus();
+      ci.dispatchEvent(new Event("input"));
+    });
+  }
+
+  /* Voice input — "talk instead of type" (digital inclusion).
+     Uses the Web Speech API; hides itself where unavailable. */
+  function wireMic(btnId, taId) {
+    const btn = document.getElementById(btnId);
+    if (!btn) return;
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) { btn.style.display = "none"; return; }
+    let rec = null, on = false;
+    btn.onclick = () => {
+      if (on && rec) { rec.stop(); return; }
+      rec = new SR(); rec.lang = "en-GB"; rec.interimResults = true; rec.continuous = false;
+      const ta = document.getElementById(taId);
+      const base = ta.value ? ta.value.trim() + " " : "";
+      rec.onstart = () => { on = true; btn.classList.add("rec"); };
+      rec.onerror = () => { on = false; btn.classList.remove("rec"); };
+      rec.onend = () => { on = false; btn.classList.remove("rec"); };
+      rec.onresult = e => {
+        let t = ""; for (const r of e.results) t += r[0].transcript;
+        ta.value = base + t; ta.dispatchEvent(new Event("input"));
+      };
+      try { rec.start(); } catch (_) {}
+    };
   }
 
   function addBubble(logId, cls, text, who) {
@@ -552,6 +617,7 @@ When all three are settled, also append [[READY]]. Never mention the tags or the
           <div class="chat-log" id="tlog"></div>
           <div class="composer">
             <textarea id="tci" placeholder="Ask your tool something…" rows="1"></textarea>
+            <button class="btn btn-ghost mic" id="tmic" title="Talk instead of type" aria-label="Voice input">🎤</button>
             <button class="btn btn-primary" id="tsend">Send</button>
           </div>
         </div>
@@ -576,6 +642,7 @@ When all three are settled, also append [[READY]]. Never mention the tags or the
     tci.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendTool(); } });
     tci.addEventListener("input", () => { tci.style.height = "auto"; tci.style.height = Math.min(tci.scrollHeight, 140) + "px"; });
     document.getElementById("tsend").onclick = sendTool;
+    wireMic("tmic", "tci");
 
     if (S.toolChat.length === 0) openTool();
     else S.toolChat.forEach(m => addBubble("tlog", m.role === "assistant" ? "ai tool" : "user", m.content, m.role === "assistant" ? S.tool.name : S.name));
@@ -806,6 +873,14 @@ When all three are settled, also append [[READY]]. Never mention the tags or the
               <div class="muted" style="font-size:.8rem;margin:-.2rem 0 .4rem 90px">${esc(l.note)}</div>`).join("")}
           </div>
           <p class="muted" style="font-size:.8rem;margin-top:.4rem">Framework shown with demo values — captured at exit, 6 and 12 months.</p>
+        </div>
+      </div>
+
+      <div class="card mt-2">
+        <span class="eyebrow">How we measure agency — rigour, not anecdote</span>
+        <h3>A measure you can stand behind.</h3>
+        <div class="grid grid-2 mt-1">
+          ${D.methodology.map(m => `<div class="flex" style="align-items:flex-start;gap:.6rem"><span class="check">✓</span><div><strong style="font-size:.95rem">${esc(m.t)}</strong><div class="muted" style="font-size:.88rem">${esc(m.d)}</div></div></div>`).join("")}
         </div>
       </div>
 
