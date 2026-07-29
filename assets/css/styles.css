@@ -291,8 +291,41 @@ a { color: var(--ink); text-decoration: none; }
   font-size: .82rem; color: var(--ink-3);
 }
 
+/* Challenge band (dark) */
+.challenge-band {
+  background: var(--ink); color: #fff; border-radius: var(--radius); padding: 2rem;
+  display: grid; gap: 1.6rem; align-items: center;
+}
+@media (min-width: 820px) { .challenge-band { grid-template-columns: 1.1fr .9fr; } }
+
+/* Check / bullet marker */
+.check {
+  flex: none; width: 22px; height: 22px; border-radius: 6px; background: var(--yellow-tint);
+  border: 1px solid var(--yellow-soft); color: var(--ink); font-weight: 800; font-size: .8rem;
+  display: grid; place-items: center; margin-top: 1px;
+}
+
+/* Focus-area cards (eight priority areas) */
+.focus-card { display: flex; gap: .9rem; align-items: flex-start; }
+.focus-ico {
+  flex: none; width: 44px; height: 44px; border-radius: 12px; background: var(--yellow-tint);
+  border: 1px solid var(--yellow-soft); display: grid; place-items: center; font-size: 1.3rem;
+}
+
+/* Reflection quote (passport) */
+.reflection {
+  margin-top: 1rem; padding: 1rem 1.2rem; border-left: 4px solid var(--yellow);
+  background: var(--paper-2); border-radius: 0 12px 12px 0; font-size: 1.05rem;
+  font-style: italic; color: var(--ink);
+}
+
+/* Generated report */
+.report-body { margin-top: 1rem; padding: 1.2rem 1.4rem; background: var(--paper-2); border: 1px solid var(--line); border-radius: 12px; }
+.report-body p { color: var(--ink); margin: 0 0 .8rem; }
+.report-body p:last-child { margin-bottom: 0; }
+
 /* Utility */
-.stack > * + * { margin-top: 1rem; }
+.stack > * + * { margin-top: var(--s, 1rem); }
 .center { text-align: center; }
 .flex { display: flex; gap: .8rem; align-items: center; }
 .flex-wrap { flex-wrap: wrap; }
@@ -302,3 +335,13 @@ a { color: var(--ink); text-decoration: none; }
 .divider { height: 1px; background: var(--line); margin: 1.4rem 0; border: none; }
 .fade-in { animation: fade .4s ease; }
 @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+/* ---------- Print (passport & impact report) ---------- */
+@media print {
+  .topbar, .sitefooter, .rail, .no-print, .composer, .modal-backdrop { display: none !important; }
+  body { background: #fff; }
+  .journey { display: block; }
+  .card, .passport { box-shadow: none; break-inside: avoid; }
+  a[href]:after { content: ""; }
+  .challenge-band, .belief, .meter-card { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}

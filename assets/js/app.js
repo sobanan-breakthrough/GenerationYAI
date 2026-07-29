@@ -20,6 +20,7 @@
     buildChat: [],   // visible transcript, starts with companion opening
     tool: null,      // { name, purpose, audience, personality, instructions }
     toolChat: [],    // visible transcript with the built tool
+    reflection: "",  // qualitative distance travelled (their own words)
     exitDone: false,
     uplift: null
   });
@@ -76,7 +77,7 @@
         <div>
           <span class="eyebrow">Breakthrough Social Enterprise</span>
           <h1>The AI companion that helps you build&nbsp;— and believe you can.</h1>
-          <p class="lede">GenerationYAI meets you where you are, then teaches by building. You'll make a real AI tool of your own, see how far you've come, and take the next step. Free for every associate.</p>
+          <p class="lede">Wherever you're from — a block in London, an estate in Manchester, anywhere across the UK — GenerationYAI meets you where you are and teaches by building. You'll make a real AI tool of your own, see how far you've come, and take the next step. Always free for you.</p>
           <div class="hero-cta">
             <a class="btn btn-primary btn-lg" href="#/journey">${resumed ? "Continue building" : "Start building"} →</a>
             <a class="btn btn-ghost btn-lg" href="#/funder">See the impact view</a>
@@ -115,6 +116,49 @@
           <div class="num">3</div><h3>Measure</h3>
           <p>A short agency check-in at the start and end captures your <em>distance travelled</em> — confidence, capability, and what you'll do next.</p>
         </div>
+      </div>
+
+      <div class="challenge-band mt-2">
+        <div>
+          <span class="eyebrow" style="color:rgba(255,255,255,.6)">The challenge</span>
+          <h2 style="color:#fff;max-width:20ch">A generation is being locked out of the AI economy.</h2>
+          <p class="muted" style="color:rgba(255,255,255,.72)">The barrier isn't ability. It's structural — unequal access, thin networks, and a belief that "this isn't for people like me." As AI collapses the cost of building, the decisive question is who believes they're allowed to participate.</p>
+        </div>
+        <div class="grid grid-3" style="gap:1rem">
+          ${D.challenge.map(c => `<div class="stat"><div class="n" style="color:var(--yellow)">${esc(c.n)}</div><div class="k" style="color:rgba(255,255,255,.7)">${esc(c.k)}</div></div>`).join("")}
+        </div>
+      </div>
+
+      <div class="section-head mt-2">
+        <span class="eyebrow">Why us, not the alternatives</span>
+        <h2>What makes GenerationYAI different.</h2>
+      </div>
+      <div class="grid grid-2">
+        ${D.differentiators.map(d => `<div class="card"><h3 style="font-size:1.05rem">${esc(d.t)}</h3><p class="mb-0 muted">${esc(d.d)}</p></div>`).join("")}
+      </div>
+
+      <div class="card mt-2">
+        <div class="flex flex-wrap" style="justify-content:space-between;align-items:baseline">
+          <div><span class="eyebrow">Responsible by design</span><h3 class="mb-0">AI used to liberate, not to defer to.</h3></div>
+          <a class="link-quiet" href="#/funder">See the full approach →</a>
+        </div>
+        <div class="grid grid-2 mt-1">
+          ${D.responsibleAI.map(r => `<div class="flex" style="align-items:flex-start;gap:.6rem"><span class="check">✓</span><div><strong style="font-size:.95rem">${esc(r.t)}</strong><div class="muted" style="font-size:.88rem">${esc(r.d)}</div></div></div>`).join("")}
+        </div>
+      </div>
+
+      <div class="section-head mt-2">
+        <span class="eyebrow">Built for young people in cities across the UK</span>
+        <h2>One product, eight fronts.</h2>
+        <p>The panel named eight priority areas. GenerationYAI is designed to move all of them at once — for young people in London, Manchester, Birmingham, Glasgow and every city in between — because in a young person's real life they were never separate problems.</p>
+      </div>
+      <div class="grid grid-2">
+        ${D.focusAreas.map(f => `
+          <div class="card focus-card">
+            <div class="focus-ico">${f.icon}</div>
+            <div><h3 style="font-size:1rem;margin-bottom:.15rem">${esc(f.area)}</h3>
+            <p class="mb-0 muted" style="font-size:.9rem">${esc(f.how)}</p></div>
+          </div>`).join("")}
       </div>
 
       <div class="card card-flat mt-2 stack">
@@ -205,7 +249,7 @@
         </div>
         <div>
           <label class="field-label" for="gl">What would you love to be able to do, or change?</label>
-          <input class="text-input" id="gl" placeholder="e.g. get into work, help my community, start something" value="${esc(S.goal)}" />
+          <input class="text-input" id="gl" placeholder="e.g. get into work, start a brand, level up my content, help my ends" value="${esc(S.goal)}" />
         </div>
         <div class="flex" style="justify-content:flex-end">
           <button class="btn btn-primary" id="next0">Continue →</button>
@@ -278,11 +322,14 @@ YOUR JOB: guide them, in plain warm language, to define ONE simple AI tool of th
 2) AUDIENCE — who is it for? (themselves, or people like them)
 3) BRAIN — how should it behave / what should it do and say?
 
+WHO YOU'RE SPEAKING WITH: young people in cities across the UK, many from underserved communities — some NEET, some with justice or care experience. Be culturally aware and real. Draw examples from things that matter in their world (getting into work, money, starting a business or brand, music, content, sport, their area/community). Never force slang, never stereotype, never talk down — respect always.
+
 HOW TO TALK:
-- Warm, grounded, respectful. Speak to them as a capable adult, never as a child or a "student".
+- Warm, grounded, real. Speak to them as a capable adult, never as a child or a "student".
+- Modern, natural British English. Plain words, short sentences. Match their energy without putting it on.
 - Strength-based: reflect back their ideas as good ones. Turn "this isn't for me" into "you're already doing it".
 - Keep every reply SHORT: 2–4 sentences, then ONE clear question. Never lecture, never list steps.
-- Use their name occasionally. British English.
+- Use their name occasionally.
 
 MILESTONE TAGS (invisible to them): when the associate has, in their own words, settled one of the three, append the matching tag on its own final line. Emit each tag only ONCE, only when genuinely met:
 [[MILESTONE:purpose]]  [[MILESTONE:audience]]  [[MILESTONE:brain]]
@@ -509,6 +556,7 @@ When all three are settled, also append [[READY]]. Never mention the tags or the
           </div>
         </div>
       </div>
+      <div class="notice" style="margin-top:1rem">🧭 <strong>You're in charge of it.</strong> Notice what it gets right — and what it doesn't. Learning to question AI is part of the skill. Your messages stay in your browser, and you can clear them any time.</div>
       <div class="flex mt-1" style="justify-content:space-between">
         <button class="btn btn-ghost" id="backT">← Back to build</button>
         <button class="btn btn-primary" id="toExit">See how far I've come →</button>
@@ -571,6 +619,10 @@ When all three are settled, also append [[READY]]. Never mention the tags or the
       <h2>Same six things. How do they feel now?</h2>
       <p>You've built a real AI tool that's yours. Answer honestly — then we'll show your distance travelled.</p>
       <div class="card">${renderLikert("exit")}</div>
+      <div class="card mt-1">
+        <label class="field-label" for="refl" style="margin-top:0">In your own words — what feels different now? (optional)</label>
+        <textarea class="text-input" id="refl" rows="2" placeholder="e.g. I didn't think I could build anything with AI. Turns out I can.">${esc(S.reflection)}</textarea>
+      </div>
       <div class="flex mt-1" style="justify-content:space-between">
         <button class="btn btn-ghost" id="backE">← Back</button>
         <button class="btn btn-primary" id="seeDT" disabled>Show my distance travelled →</button>
@@ -578,6 +630,7 @@ When all three are settled, also append [[READY]]. Never mention the tags or the
       <div id="dtResult" class="mt-2"></div>`;
     const check = () => { document.getElementById("seeDT").disabled = S.exit.some(x => x == null); };
     wireLikert("exit", check); check();
+    document.getElementById("refl").addEventListener("input", e => { S.reflection = e.target.value; save(); });
     document.getElementById("backE").onclick = () => goStep(3);
     document.getElementById("seeDT").onclick = showDistance;
   }
@@ -637,9 +690,10 @@ When all three are settled, also append [[READY]]. Never mention the tags or the
           <span class="tag">Built &amp; tested a working tool</span>
           <span class="tag">AI literacy: doing, not watching</span>
         </div>
+        ${S.reflection ? `<div class="reflection">“${esc(S.reflection)}”<span class="muted"> — ${esc(S.name)}, in their own words</span></div>` : ""}
       </div>
 
-      <div class="card mt-2">
+      <div class="card mt-2 no-print">
         <span class="eyebrow">Your next step · matching layer</span>
         <h3 class="mb-0">Real routes that fit what you've just shown.</h3>
         <p class="muted">Illustrative matches for the demo — the live product connects to current openings from partner employers.</p>
@@ -658,13 +712,17 @@ When all three are settled, also append [[READY]]. Never mention the tags or the
         <button class="btn btn-ghost mt-1" id="cvBtn">✍️ Write a line for my CV about this</button>
       </div>
 
-      <div class="flex flex-wrap mt-2" style="justify-content:space-between">
-        <a class="btn btn-dark" href="#/funder">See this in the funder view →</a>
+      <div class="flex flex-wrap mt-2 no-print" style="justify-content:space-between">
+        <div class="flex" style="gap:.5rem">
+          <a class="btn btn-dark" href="#/funder">See this in the funder view →</a>
+          <button class="btn btn-ghost" id="printPass">Print / save passport</button>
+        </div>
         <button class="btn btn-ghost" id="again">Run it again</button>
       </div>`;
 
     document.getElementById("again").onclick = () => { if (confirm("Clear this session and start over?")) reset(); };
     document.getElementById("cvBtn").onclick = writeCV;
+    document.getElementById("printPass").onclick = () => window.print();
   }
 
   async function writeCV() {
@@ -689,6 +747,8 @@ When all three are settled, also append [[READY]]. Never mention the tags or the
      ===================================================================== */
   function renderFunder() {
     const c = D.cohort;
+    const sv = D.proxy.perProgression * c.progressed + D.proxy.perEngagement * Math.round(c.size * c.engaged / 100);
+    const svStr = "£" + Math.round(sv / 1000) + "k";
     const liveBanner = S.exitDone
       ? `<div class="notice" style="margin-bottom:1.4rem">🟢 <strong>Live:</strong> 1 associate completed the loop in this session — measured agency uplift <strong>${S.uplift >= 0 ? "+" : ""}${S.uplift}</strong> on the 5-point scale. In the real product, this flows into the cohort figures automatically.</div>`
       : "";
@@ -728,20 +788,70 @@ When all three are settled, also append [[READY]]. Never mention the tags or the
       </div>
 
       <div class="grid grid-2 mt-2">
-        <div class="card">
-          <span class="eyebrow">The model</span>
-          <h3>Social value, sold B2B2C.</h3>
-          <ul style="padding-left:1.1rem;color:var(--ink-2);margin:0">
-            ${D.socialValue.map(s => `<li style="margin:.4rem 0">${esc(s)}</li>`).join("")}
-          </ul>
+        <div class="belief" style="background:var(--ink)">
+          <span class="eyebrow" style="color:rgba(255,255,255,.6)">Illustrative social-value proxy</span>
+          <div class="n" style="font-size:2.8rem;font-weight:800;color:var(--yellow);line-height:1">${svStr}</div>
+          <p class="muted" style="color:rgba(255,255,255,.72);margin:.4rem 0 0">Estimated social value generated by this cohort, from progression and sustained engagement. ${esc(D.proxy.label)}</p>
         </div>
         <div class="card">
-          <span class="eyebrow">Built on a real track record</span>
-          <h3>Breakthrough's delivery to date.</h3>
-          <div class="grid grid-2">
-            ${D.trackRecord.map(t => `<div class="stat"><div class="n" style="font-size:1.7rem">${esc(t.n)}</div><div class="k">${esc(t.k)}</div></div>`).join("")}
+          <span class="eyebrow">Longitudinal follow-up</span>
+          <h3 style="margin:.2rem 0 .8rem">We track outcomes past the programme.</h3>
+          <div class="stack" style="--s:.5rem">
+            ${D.longitudinal.map(l => `
+              <div class="dt-row" style="grid-template-columns:90px 1fr auto;align-items:center">
+                <span style="font-weight:700;font-size:.9rem">${esc(l.when)}</span>
+                <div class="dt-bar after" style="height:12px"><span style="width:${l.pct}%"></span></div>
+                <span style="font-weight:700">${l.pct}%</span>
+              </div>
+              <div class="muted" style="font-size:.8rem;margin:-.2rem 0 .4rem 90px">${esc(l.note)}</div>`).join("")}
           </div>
-          <p class="muted" style="margin-top:.8rem">Figures from Breakthrough's venture record. Cohort panel above is illustrative demo data.</p>
+          <p class="muted" style="font-size:.8rem;margin-top:.4rem">Framework shown with demo values — captured at exit, 6 and 12 months.</p>
+        </div>
+      </div>
+
+      <div class="card mt-2" id="reportCard">
+        <div class="flex flex-wrap" style="justify-content:space-between;align-items:baseline">
+          <div><span class="eyebrow">Reporting, automated</span><h3 class="mb-0">Generate a funder-ready impact summary.</h3></div>
+          <div class="flex" style="gap:.5rem">
+            <button class="btn btn-ghost" id="printReport">Print / save PDF</button>
+            <button class="btn btn-primary" id="genReport">✨ Generate summary</button>
+          </div>
+        </div>
+        <p class="muted">The same data associates generate by using the product becomes the report a funder receives. Written live by Claude from this cohort's figures.</p>
+        <div id="reportOut"></div>
+      </div>
+
+      <div class="grid grid-2 mt-2">
+        <div class="card">
+          <span class="eyebrow">Commercial model</span>
+          <h3>Social value, sold B2B2C.</h3>
+          <ul style="padding-left:1.1rem;color:var(--ink-2);margin:0 0 1rem">
+            ${D.socialValue.map(s => `<li style="margin:.4rem 0">${esc(s)}</li>`).join("")}
+          </ul>
+          <span class="eyebrow">Already earning</span>
+          <div class="stack" style="--s:.4rem;margin-top:.5rem">
+            ${D.pipeline.map(p => `<div class="match"><div class="logo">£</div><div><strong>${esc(p.v)}</strong> · ${esc(p.org)}<div class="muted" style="font-size:.85rem">${esc(p.d)}</div></div></div>`).join("")}
+          </div>
+        </div>
+        <div class="card">
+          <span class="eyebrow">Why it scales</span>
+          <h3>Tailwinds behind the model.</h3>
+          <div class="stack" style="--s:.5rem">
+            ${D.tailwinds.map(t => `<div class="flex" style="align-items:flex-start;gap:.6rem"><span class="check">↗</span><span style="font-size:.95rem">${esc(t)}</span></div>`).join("")}
+          </div>
+          <div class="divider"></div>
+          <span class="eyebrow">Built on a real track record</span>
+          <div class="grid grid-2 mt-1">
+            ${D.trackRecord.map(t => `<div class="stat"><div class="n" style="font-size:1.6rem">${esc(t.n)}</div><div class="k">${esc(t.k)}</div></div>`).join("")}
+          </div>
+        </div>
+      </div>
+
+      <div class="card mt-2">
+        <span class="eyebrow">Responsible AI</span>
+        <h3>Used to liberate, not to defer to.</h3>
+        <div class="grid grid-2 mt-1">
+          ${D.responsibleAI.map(r => `<div class="flex" style="align-items:flex-start;gap:.6rem"><span class="check">✓</span><div><strong style="font-size:.95rem">${esc(r.t)}</strong><div class="muted" style="font-size:.88rem">${esc(r.d)}</div></div></div>`).join("")}
         </div>
       </div>
 
@@ -758,6 +868,26 @@ When all three are settled, also append [[READY]]. Never mention the tags or the
       const max = Math.max(...c.deltas);
       spark.innerHTML = c.deltas.map(d => `<div title="+${d}" style="flex:1;background:var(--yellow);border-radius:3px 3px 0 0;height:${Math.max(8, d / max * 100)}%"></div>`).join("");
     }
+    document.getElementById("printReport").onclick = () => window.print();
+    document.getElementById("genReport").onclick = () => generateReport(c, svStr);
+  }
+
+  async function generateReport(c, svStr) {
+    if (!API.hasKey()) { openSettings(); return; }
+    const btn = document.getElementById("genReport"), out = document.getElementById("reportOut");
+    btn.disabled = true; btn.textContent = "Writing…";
+    const facts = `Cohort: ${c.name} (${c.funder}). Associates: ${c.size}. Engaged after start: ${c.engaged}%. Real AI tools built: ${c.toolsBuilt}. Average agency (self-efficacy, 1-5) rose from ${c.agencyBefore} to ${c.agencyAfter}. Into work/learning/enterprise: ${c.progressed} of ${c.size}. Illustrative social-value proxy: ${svStr}.`;
+    try {
+      const txt = await API.chat([{
+        role: "user",
+        content: `You are writing for Breakthrough Social Enterprise. Write a concise funder impact summary (about 120 words) for a corporate/government commissioner, in a warm, grounded, evidence-led voice (British English). Refer to young people as "associates". Emphasise distance travelled in agency and that measurement is embedded in the product. Do not overclaim; note figures are from a demonstration cohort. Use these figures only:\n${facts}\nReturn plain prose, no headings.`
+      }], { temperature: 0.5, max_tokens: 400 });
+      out.innerHTML = `<div class="report-body">${esc(txt).replace(/\n{2,}/g, "</p><p>").replace(/^/, "<p>") + "</p>"}</div>`;
+      btn.textContent = "↻ Regenerate";
+    } catch (err) {
+      out.innerHTML = `<div class="notice warn">${esc(API.friendly(err))}</div>`;
+      btn.textContent = "✨ Generate summary";
+    } finally { btn.disabled = false; }
   }
 
   /* =====================================================================

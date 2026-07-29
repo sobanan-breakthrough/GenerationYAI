@@ -72,5 +72,69 @@ window.GY_DATA = {
     "Associates use GenerationYAI free — they never pay.",
     "Funders receive measurable social value and live outcome data.",
     "Measurement is embedded in the product, not bolted on as a survey."
+  ],
+
+  /* ---- CHALLENGE FIT: the problem, in numbers ---- */
+  challenge: [
+    { n: "1m+", k: "16–24s not in education, employment or training (UK, Jan–Mar 2026)" },
+    { n: "13.5%", k: "of the age group — first time past a million since 2013" },
+    { n: "2 gaps", k: "a skills gap and, less often addressed, an agency gap" }
+  ],
+
+  /* ---- DIFFERENTIATORS: why us, not the alternatives ---- */
+  differentiators: [
+    { t: "We start with agency", d: "Most tools teach skills or match jobs. We begin with the belief that you can participate — and measure the shift." },
+    { t: "Impact embedded, not bolted on", d: "The agency measure is part of the core loop, captured live at entry and exit — not a separate survey." },
+    { t: "Built by lived experience", d: "Led by people who came through the justice system and low socio-economic disadvantage. Designed from inside the experience." },
+    { t: "Compounds with the models", d: "Built on frontier foundation models — as they get more capable, so does every associate's companion." }
+  ],
+
+  /* ---- RESPONSIBLE AI: assessed by the prize and its partners ---- */
+  responsibleAI: [
+    { t: "Learn to question AI, not defer to it", d: "Associates direct the AI themselves, so they learn to spot bias and understand how it reaches decisions." },
+    { t: "Your data, your rights", d: "UK GDPR by design — we collect only what we need, and teach associates how to make a data subject access request." },
+    { t: "A human in the loop", d: "Age-appropriate safeguarding for under-18s, with a person alerted when a young person needs one — not a product." },
+    { t: "We don't train on your data", d: "Built on established third-party foundation models. We never train models on young people's data." }
+  ],
+
+  /* ---- COMMERCIAL VIABILITY: the model already earns ---- */
+  pipeline: [
+    { org: "BT via MoJ", v: "£120k", d: "Social-value commitment, from Sept 2025" },
+    { org: "MoJ-linked", v: "£32k", d: "12-week programme for justice-experienced people" },
+    { org: "Local authorities", v: "Commissioned", d: "Employability for care-experienced cohorts" }
+  ],
+  tailwinds: [
+    "Corporate & procurement social-value obligations are rising.",
+    "Government employment support is being devolved and expanded — Connect to Work across dozens of local areas.",
+    "Commissioning budgets are moving closer to the young people we serve."
+  ],
+
+  /* ---- IMPACT: social-value proxy (illustrative, transparent basis) ----
+     Proxy unit values are indicative, in the spirit of social-value
+     costing (e.g. unit-cost databases). NOT audited figures. */
+  proxy: {
+    perProgression: 4200,   // £ proxy value of a move into work/learning/enterprise
+    perEngagement: 350,     // £ proxy value of sustained engagement
+    label: "Illustrative social-value proxy — indicative unit values, not audited."
+  },
+
+  /* ---- IMPACT: longitudinal follow-up (framework, demo values) ---- */
+  longitudinal: [
+    { when: "At exit", pct: 63, note: "in or actively pursuing work, learning or enterprise" },
+    { when: "6 months", pct: 58, note: "sustained progression (follow-up)" },
+    { when: "12 months", pct: 54, note: "sustained progression (follow-up)" }
+  ],
+
+  /* ---- The prize's eight priority areas, and how ONE loop addresses each.
+     Each maps to a concrete part of the product, not a claim. ---- */
+  focusAreas: [
+    { icon: "📚", area: "Learning & education access", how: "Free, no prerequisites, plain language. The companion meets each associate where they are and teaches by building — not passive lessons." },
+    { icon: "🔑", area: "Re-engaging young people (NEET)", how: "Agency-first re-engagement for NEET and justice-experienced young people. Funded by others, so it's always free at the point of use." },
+    { icon: "🤖", area: "AI literacy & digital skills", how: "Associates build a real AI tool and learn to direct — and question — AI. Literacy by doing, the skill that compounds." },
+    { icon: "🌍", area: "Digital access & inclusion", how: "Runs in any browser on a modest device and connection. Low barriers, plain language, inclusive by design — background doesn't decide access." },
+    { icon: "💼", area: "Future of work & employability", how: "Every associate leaves with something they built and a progress passport — evidence of capability, not just a certificate." },
+    { icon: "🤝", area: "Inclusive recruitment & hiring", how: "The passport gives employers a fairer signal than a CV, and the matching layer connects to partner apprenticeships and roles." },
+    { icon: "🧭", area: "Careers guidance & mentoring", how: "The companion coaches and reflects real next steps live, with a human mentor in the loop when a person is what's needed." },
+    { icon: "💛", area: "Wellbeing & essential support", how: "Strength-based throughout, agency and self-efficacy measured, and a human alerted when a young person needs support — not a product." }
   ]
 };
