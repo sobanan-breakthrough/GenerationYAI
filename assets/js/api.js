@@ -1,5 +1,5 @@
 /* ============================================================
-   GenerationYAI — Claude API wrapper (bring-your-own-key)
+   Break Through — Claude API wrapper (bring-your-own-key)
    Calls the Anthropic Messages API directly from the browser.
    The key lives only in this browser's localStorage and is sent
    straight to Anthropic — never to Breakthrough or anyone else.

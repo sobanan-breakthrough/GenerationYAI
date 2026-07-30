@@ -1,5 +1,5 @@
 /* ============================================================
-   GenerationYAI — application
+   Break Through — application
    A working prototype of Break Through: build a real AI tool,
    build agency, and measure the shift — all in one loop.
    ============================================================ */
@@ -140,7 +140,7 @@
         <div>
           <span class="eyebrow">Breakthrough Social Enterprise</span>
           <h1>The AI companion that helps you build&nbsp;— and believe you can.</h1>
-          <p class="lede">Wherever you're from — a block in London, an estate in Manchester, anywhere across the UK — GenerationYAI meets you where you are and teaches by building. You'll make a real AI tool of your own, see how far you've come, and take the next step. Always free for you.</p>
+          <p class="lede">Wherever you're from — a block in London, an estate in Manchester, anywhere across the UK — Break Through meets you where you are and teaches by building. You'll make a real AI tool of your own, see how far you've come, and take the next step. Always free for you.</p>
           <div class="hero-cta">
             <a class="btn btn-primary btn-lg" href="#/journey">${resumed ? "Continue building" : "Start building"} →</a>
             <a class="btn btn-ghost btn-lg" href="#/funder">See the impact view</a>
@@ -155,7 +155,7 @@
           <span class="eyebrow" style="color:rgba(255,255,255,.6)">Our core belief</span>
           <p class="big">People are not behind.<br><strong>Systems are.</strong></p>
           <hr class="divider" style="background:rgba(255,255,255,.15)">
-          <p class="muted" style="margin:0">The binding constraint isn't only skill — it's agency: the belief you can participate, and the tools to act on it. GenerationYAI builds both.</p>
+          <p class="muted" style="margin:0">The binding constraint isn't only skill — it's agency: the belief you can participate, and the tools to act on it. Break Through builds both.</p>
         </div>
       </div>
     </section>
@@ -194,7 +194,7 @@
 
       <div class="section-head mt-2">
         <span class="eyebrow">Why us, not the alternatives</span>
-        <h2>What makes GenerationYAI different.</h2>
+        <h2>What makes Break Through different.</h2>
       </div>
       <div class="grid grid-2">
         ${D.differentiators.map(d => `<div class="card"><h3 style="font-size:1.05rem">${esc(d.t)}</h3><p class="mb-0 muted">${esc(d.d)}</p></div>`).join("")}
@@ -213,7 +213,7 @@
       <div class="section-head mt-2">
         <span class="eyebrow">Built for young people in cities across the UK</span>
         <h2>One product, eight fronts.</h2>
-        <p>The panel named eight priority areas. GenerationYAI is designed to move all of them at once — for young people in London, Manchester, Birmingham, Glasgow and every city in between — because in a young person's real life they were never separate problems.</p>
+        <p>The panel named eight priority areas. Break Through is designed to move all of them at once — for young people in London, Manchester, Birmingham, Glasgow and every city in between — because in a young person's real life they were never separate problems.</p>
       </div>
       <div class="grid grid-2">
         ${D.focusAreas.map(f => `
@@ -419,7 +419,7 @@
   }
 
   /* ---------- Step 2: Build (companion-guided) ---------- */
-  const BUILD_SYSTEM = () => `You are the GenerationYAI learning companion, made by Breakthrough Social Enterprise. You are coaching a young person (an "associate") to build their very first AI tool — a simple custom assistant they will actually use.
+  const BUILD_SYSTEM = () => `You are the Break Through learning companion, made by Breakthrough Social Enterprise. You are coaching a young person (an "associate") to build their very first AI tool — a simple custom assistant they will actually use.
 
 WHO YOU ARE TALKING TO: ${S.name}. Where they're starting from: "${S.startingPoint || "not sure AI is for them"}". What they want: "${S.goal || "not sure yet"}".
 
@@ -812,7 +812,7 @@ When all three are settled, also append [[READY]]. Never mention the tags or the
       <div class="card pad-lg fade-in">
         <span class="eyebrow">Distance travelled · measured in-product</span>
         <h3>Your agency moved from ${before.toFixed(1)} to ${after.toFixed(1)} out of 5.</h3>
-        <p>That's the shift GenerationYAI is built to create — and to measure. Here it is, statement by statement.</p>
+        <p>That's the shift Break Through is built to create — and to measure. Here it is, statement by statement.</p>
         ${D.agencyStatements.map((st, i) => {
           const b = S.baseline[i], a = S.exit[i], d = a - b;
           return `<div style="margin:.9rem 0">
@@ -841,7 +841,7 @@ When all three are settled, also append [[READY]]. Never mention the tags or the
       <div class="step-eyebrow"><span class="eyebrow">Step 6 of 6 · Your progress passport</span></div>
       <div class="passport">
         <span class="stamp">BUILT IT ✓</span>
-        <span class="eyebrow">GenerationYAI · Breakthrough</span>
+        <span class="eyebrow">Break Through · Breakthrough Social Enterprise</span>
         <h2 style="margin:.2rem 0 .2rem">${esc(S.name)}'s progress passport</h2>
         <p class="muted" style="margin:0 0 1rem">Breaking Barriers, Building Futures</p>
         ${(() => { const el = elObj(), si = stageInfo(computeXP()); return `<div class="passport-companion">${GY_creature(el, si.n, 96)}<div><span class="eyebrow">Your companion</span><h3 class="mb-0">${esc(el.name)} · ${esc(si.name)}</h3><span class="muted">${esc(el.strength)} ${el.emoji} · grew with you as you learned</span></div></div>`; })()}
@@ -969,7 +969,7 @@ When all three are settled, also append [[READY]]. Never mention the tags or the
     };
   }
 
-  const NAV_SYSTEM = () => `You are the GenerationYAI career navigator, made by Breakthrough Social Enterprise. You help a young person (an "associate") in the UK understand what they truly want from work, and map routes towards it. Many are NEET, some justice- or care-experienced.
+  const NAV_SYSTEM = () => `You are the Break Through career navigator, made by Breakthrough Social Enterprise. You help a young person (an "associate") in the UK understand what they truly want from work, and map routes towards it. Many are NEET, some justice- or care-experienced.
 
 WHO: ${S.name || "the associate"}. They've told you their motivations: ${(S.career.context?.drivers || []).join(", ") || "unspecified"}. Things it needs to fit around: ${(S.career.context?.needs || []).join(", ") || "none given"}.
 
@@ -1155,7 +1155,7 @@ Be concrete and honest (name real UK options: apprenticeships/traineeships, Univ
       <div class="wrap" style="display:block">
         <span class="eyebrow">More than a course · a companion for the journey</span>
         <h1 style="max-width:24ch">It doesn't stop at one tool. It grows with you.</h1>
-        <p class="lede" style="max-width:58ch">GenerationYAI isn't a one-off intervention. It's a companion that stays with a young person as they grow into adulthood — from a first win, to fluency, to work, to a life they're steering. Learn by building, ethics woven through, the whole person supported.</p>
+        <p class="lede" style="max-width:58ch">Break Through isn't a one-off intervention. It's a companion that stays with a young person as they grow into adulthood — from a first win, to fluency, to work, to a life they're steering. Learn by building, ethics woven through, the whole person supported.</p>
       </div>
     </section>
 
@@ -1186,7 +1186,7 @@ Be concrete and honest (name real UK options: apprenticeships/traineeships, Univ
           <div><span class="eyebrow">Not a prototype pretending · grounded in what we already deliver</span><h3 class="mb-0">The curriculum behind it: ${esc(cur.name)}</h3></div>
           <span class="pill"><span class="dot"></span> Already running</span>
         </div>
-        <p class="muted">${esc(cur.meta)}. GenerationYAI turns a curriculum Breakthrough already delivers to associates into a companion that can scale it.</p>
+        <p class="muted">${esc(cur.meta)}. Break Through turns a curriculum Breakthrough already delivers to associates into a companion that can scale it.</p>
         <div class="modgrid">
           ${cur.modules.map((m, i) => `<div class="mod"><span class="mod-n">${String(i + 1).padStart(2, "0")}</span>${esc(m)}</div>`).join("")}
         </div>
@@ -1219,7 +1219,7 @@ Be concrete and honest (name real UK options: apprenticeships/traineeships, Univ
     <div class="wrap">
       <span class="eyebrow">For funders &amp; commissioners</span>
       <h1 style="max-width:22ch">Impact you can see, because it's built into the product.</h1>
-      <p class="lede" style="max-width:60ch">Corporates and government fund cohorts of NEET or justice-experienced young people. Associates use GenerationYAI free. Funders get measurable social value and live outcome data — captured as part of the core experience, not a bolted-on survey.</p>
+      <p class="lede" style="max-width:60ch">Corporates and government fund cohorts of NEET or justice-experienced young people. Associates use Break Through free. Funders get measurable social value and live outcome data — captured as part of the core experience, not a bolted-on survey.</p>
       ${liveBanner}
 
       <div class="card card-flat" style="margin-top:1.4rem">

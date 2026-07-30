@@ -1,16 +1,18 @@
-# GenerationYAI
+# Break Through
 
-**A working prototype of _Break Through_ — the AI learning companion by [Breakthrough Social Enterprise](https://wearebreakthrough.co.uk).**
+**The AI learning companion by [Breakthrough Social Enterprise](https://wearebreakthrough.co.uk) — a working prototype.**
 
 > People are not behind. Systems are.
 
 **Live:** https://sobanan-breakthrough.github.io/GenerationYAI/
 
-![Walkthrough of GenerationYAI](docs/walkthrough.gif)
+<sub>The repo and URL still use the original working title `GenerationYAI`; the product is **Break Through**.</sub>
+
+![Walkthrough of Break Through](docs/walkthrough.gif)
 
 *90-second walkthrough: an associate (Marcus) arrives, checks in, builds his own AI tool with the live companion, sees his measured distance travelled, gets his progress passport and mapped career routes — and the same session flows into the funder view.*
 
-GenerationYAI demonstrates Break Through's core loop in a single experience a panel can watch end to end:
+Break Through demonstrates its core loop in a single experience a panel can watch end to end:
 
 1. **Build** — a live Claude companion sets a real, personal project and coaches an associate to build their **first AI tool**, then they talk to the tool they built ("I built this").
 2. **Believe (agency)** — progress is made visible with an agency meter, milestones, and an **elemental companion creature** that evolves as they learn.

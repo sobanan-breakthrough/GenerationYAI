@@ -1,5 +1,5 @@
 /* ============================================================
-   GenerationYAI — elemental companion creatures
+   Break Through — elemental companion creatures
    Self-contained cute SVG art, themed by element, evolving by
    stage (1 Spark → 2 Kindred → 3 Ascended). No external assets.
    ============================================================ */

@@ -1,5 +1,5 @@
 /* ============================================================
-   GenerationYAI — static data
+   Break Through — static data
    Agency instrument, build milestones, matching layer, cohort.
    All cohort figures are clearly labelled ILLUSTRATIVE demo data.
    ============================================================ */
@@ -40,7 +40,7 @@ window.GY_DATA = {
   matches: [
     { org: "BT", logo: "BT", role: "Digital Support Apprentice", fit: "Strong match", why: "You showed you can learn a new tool fast and explain it simply." },
     { org: "Cisco", logo: "C", role: "AI Operations Assistant", fit: "Good match", why: "You directed an AI system to do a real job — the core of the role." },
-    { org: "Breakthrough", logo: "Y", role: "Community Tech Mentor (paid)", fit: "Open now", why: "Associates who build often come back to help the next cohort." }
+    { org: "Breakthrough", logo: "B", role: "Community Tech Mentor (paid)", fit: "Open now", why: "Associates who build often come back to help the next cohort." }
   ],
 
   /* FUNDER DASHBOARD — illustrative demo cohort.
@@ -69,7 +69,7 @@ window.GY_DATA = {
 
   socialValue: [
     "Corporates and government fund cohorts of NEET or justice-experienced young people.",
-    "Associates use GenerationYAI free — they never pay.",
+    "Associates use Break Through free — they never pay.",
     "Funders receive measurable social value and live outcome data.",
     "Measurement is embedded in the product, not bolted on as a survey."
   ],
@@ -237,7 +237,7 @@ window.GY_DATA = {
     ]
   },
 
-  /* ---- THE PATHWAY: GenerationYAI grows with a young person, from a
+  /* ---- THE PATHWAY: Break Through grows with a young person, from a
      first win into adulthood. Mapped to the four-phase arc that runs through
      Breakthrough's real programmes: Foundation → Fluency → Application →
      Transition — plus the whole-person support that surrounds it. ---- */
