@@ -13,6 +13,8 @@
   const LS = "gy_session";
   const blank = () => ({
     name: "", startingPoint: "", goal: "",
+    element: null,   // chosen companion element key
+    xp: 0,           // gamification XP → drives creature evolution
     step: 0,
     baseline: Array(D.agencyStatements.length).fill(null),
     exit: Array(D.agencyStatements.length).fill(null),
@@ -53,6 +55,61 @@
     return Math.round(done / 4 * 100);
   };
   function scrollLog() { const l = document.querySelector(".chat-log"); if (l) l.scrollTop = l.scrollHeight; }
+
+  /* ---------------- Gamification (elemental companion) ---------------- */
+  function elObj() { return D.elements.find(e => e.key === S.element) || D.elements[4]; }
+  function computeXP() {
+    const x = D.xp; let xp = 0;
+    if (S.baseline.length && !S.baseline.some(v => v == null)) xp += x.baseline;
+    xp += (S.milestones.purpose ? x.milestone : 0) + (S.milestones.audience ? x.milestone : 0) + (S.milestones.brain ? x.milestone : 0);
+    if (S.tool) xp += x.built;
+    if (S.milestones.test) xp += x.tested;
+    if (S.exitDone) xp += x.exit;
+    return Math.min(xp, 100);
+  }
+  function stageInfo(xp) {
+    const st = D.evoStages;
+    let i = 0; for (let k = 0; k < st.length; k++) if (xp >= st[k].min) i = k;
+    const next = st[i + 1] || null;
+    return { i, n: i + 1, name: st[i].name, note: st[i].note, min: st[i].min, nextMin: next ? next.min : 100 };
+  }
+  let _shownStage = 0; // tracks last displayed evolution stage for level-up FX
+
+  function creatureCardHTML() {
+    const el = elObj(), xp = computeXP(), si = stageInfo(xp);
+    const span = si.nextMin - si.min || 1;
+    const pct = Math.max(6, Math.min(100, Math.round((xp - si.min) / span * 100)));
+    const size = si.n === 1 ? 92 : si.n === 2 ? 108 : 124;
+    return `
+      <div class="creature-wrap">${GY_creature(el, si.n, size)}</div>
+      <div class="cr-name">${esc(el.name)} <span class="cr-stage">· ${esc(si.name)}</span></div>
+      <div class="cr-strength">${esc(el.strength)} · ${el.emoji}</div>
+      <div class="cr-xpbar"><span style="width:${pct}%"></span></div>
+      <div class="cr-xp">${xp} XP ${si.n < 3 ? `· ${si.nextMin - xp} to evolve` : "· fully evolved"}</div>`;
+  }
+
+  function updateProgressUI() {
+    updateMeter();
+    const box = document.getElementById("creatureCard");
+    if (box) box.innerHTML = creatureCardHTML();
+    const xp = computeXP(), si = stageInfo(xp);
+    if (si.n > _shownStage && _shownStage > 0) evolveFX(si);
+    _shownStage = si.n;
+  }
+
+  function evolveFX(si) {
+    const el = elObj();
+    const wrap = document.createElement("div");
+    wrap.className = "evolve-toast";
+    wrap.innerHTML = `<div class="evolve-inner">${GY_creature(el, si.n, 130)}
+      <div><span class="eyebrow" style="color:var(--ink-3)">Your companion evolved</span>
+      <h3 class="mb-0">${esc(el.name)} is now ${esc(si.name)}!</h3>
+      <p class="muted mb-0">Keep going — as you grow, ${esc(el.name)} grows with you.</p></div></div>`;
+    document.body.appendChild(wrap);
+    celebrate();
+    setTimeout(() => wrap.classList.add("go"), 30);
+    setTimeout(() => { wrap.classList.remove("go"); setTimeout(() => wrap.remove(), 400); }, 3200);
+  }
 
   /* ---------------- Router ---------------- */
   function route() {
@@ -185,7 +242,8 @@
     <div class="wrap">
       <div class="journey">
         <aside class="rail">
-          <div class="card" style="padding:1rem">
+          <div class="card creature-card" id="creatureCard"></div>
+          <div class="card" style="padding:1rem;margin-top:1rem">
             <span class="eyebrow">Your journey</span>
             <ul class="stepper" id="stepper"></ul>
           </div>
@@ -202,7 +260,8 @@
     </div>`;
     document.getElementById("restartBtn").onclick = () => { if (confirm("Start the journey again from scratch?")) reset(); };
     renderStepper();
-    updateMeter();
+    _shownStage = stageInfo(computeXP()).n;
+    updateProgressUI();
     renderStep();
   }
 
@@ -225,7 +284,7 @@
     val.textContent = p + "%";
   }
 
-  function goStep(i) { S.step = Math.max(0, Math.min(STEPS.length - 1, i)); save(); renderStepper(); updateMeter(); renderStep(); window.scrollTo(0, 0); }
+  function goStep(i) { S.step = Math.max(0, Math.min(STEPS.length - 1, i)); save(); renderStepper(); updateProgressUI(); renderStep(); window.scrollTo(0, 0); }
 
   function renderStep() {
     const key = STEPS[S.step].key;
@@ -269,6 +328,17 @@
           <label class="field-label" for="gl">What would you love to be able to do, or change?</label>
           <input class="text-input" id="gl" placeholder="e.g. get into work, start a brand, level up my content, help my ends" value="${esc(S.goal)}" />
         </div>
+        <div>
+          <label class="field-label">Pick your companion — it grows as you do</label>
+          <div class="el-grid">
+            ${D.elements.map(e => `
+              <button type="button" class="el-pick ${S.element === e.key ? "sel" : ""}" data-k="${e.key}" title="${esc(e.blurb)}">
+                <span class="el-art">${GY_creature(e, 1, 62)}</span>
+                <strong>${esc(e.name)}</strong>
+                <span class="muted">${esc(e.strength)} ${e.emoji}</span>
+              </button>`).join("")}
+          </div>
+        </div>
         <div class="flex" style="justify-content:flex-end">
           <button class="btn btn-primary" id="next0">Continue →</button>
         </div>
@@ -277,13 +347,19 @@
       S.name = document.getElementById("nm").value.trim() || "friend";
       S.startingPoint = document.getElementById("sp").value.trim();
       S.goal = document.getElementById("gl").value.trim();
+      if (!S.element) S.element = "ether";
       save(); goStep(1);
     };
     document.querySelectorAll(".persona").forEach(b => b.onclick = () => {
       const pn = D.personas[+b.dataset.i];
       S.name = pn.name; S.startingPoint = pn.start; S.goal = pn.goal;
-      S.baseline = pn.baseline.slice();
+      S.baseline = pn.baseline.slice(); S.element = pn.el;
       save(); goStep(1);
+    });
+    // companion element picker
+    document.querySelectorAll(".el-pick").forEach(b => b.onclick = () => {
+      S.element = b.dataset.k; save();
+      document.querySelectorAll(".el-pick").forEach(x => x.classList.toggle("sel", x.dataset.k === S.element));
     });
   }
 
@@ -528,7 +604,7 @@ When all three are settled, also append [[READY]]. Never mention the tags or the
     const clean = stripMarkers(raw);
     S.buildChat.push({ role: "assistant", content: raw }); save();
     addBubble("log", "ai", clean, "Companion");
-    renderMilestones(); updateMeter();
+    renderMilestones(); updateProgressUI();
     maybeShowToTool();
   }
 
@@ -685,7 +761,7 @@ When all three are settled, also append [[READY]]. Never mention the tags or the
     addBubble("tlog", "user", text, S.name);
     S.toolChat.push({ role: "user", content: text }); save();
     // First successful message = the "tested it" milestone.
-    if (!S.milestones.test) { S.milestones.test = true; save(); updateMeter(); renderStepper(); }
+    if (!S.milestones.test) { S.milestones.test = true; save(); updateProgressUI(); renderStepper(); }
     const t = addTyping("tlog");
     try {
       const txt = await API.chat(toolApiMessages(), { system: S.tool.instructions, temperature: 0.7, max_tokens: 600 });
@@ -723,7 +799,8 @@ When all three are settled, also append [[READY]]. Never mention the tags or the
   function showDistance() {
     const before = avg(S.baseline), after = avg(S.exit);
     const delta = after - before;
-    S.exitDone = true; S.uplift = +delta.toFixed(2); save();
+    S.exitDone = true; S.uplift = +delta.toFixed(2); S.xp = computeXP(); save();
+    updateProgressUI();
     const box = document.getElementById("dtResult");
     box.innerHTML = `
       <div class="card pad-lg fade-in">
@@ -761,6 +838,7 @@ When all three are settled, also append [[READY]]. Never mention the tags or the
         <span class="eyebrow">GenerationYAI · Breakthrough</span>
         <h2 style="margin:.2rem 0 .2rem">${esc(S.name)}'s progress passport</h2>
         <p class="muted" style="margin:0 0 1rem">Breaking Barriers, Building Futures</p>
+        ${(() => { const el = elObj(), si = stageInfo(computeXP()); return `<div class="passport-companion">${GY_creature(el, si.n, 96)}<div><span class="eyebrow">Your companion</span><h3 class="mb-0">${esc(el.name)} · ${esc(si.name)}</h3><span class="muted">${esc(el.strength)} ${el.emoji} · grew with you as you learned</span></div></div>`; })()}
         <div class="grid grid-3">
           <div class="stat"><div class="n bignum">${S.tool ? "1" : "0"}</div><div class="k">AI tool built &amp; tested</div></div>
           <div class="stat"><div class="n bignum">${after.toFixed(1)}<span style="font-size:1rem;color:var(--ink-3)">/5</span></div><div class="k">Agency now (was ${before.toFixed(1)})</div></div>

@@ -138,18 +138,46 @@ window.GY_DATA = {
     { icon: "💛", area: "Wellbeing & essential support", how: "Strength-based throughout, agency and self-efficacy measured, and a human alerted when a young person needs support — not a product." }
   ],
 
+  /* ---- GAMIFICATION: elemental companion creatures. Each represents an
+     element and a strength; it grows and evolves as the associate learns.
+     Three evolution stages, driven by XP earned across the journey. ---- */
+  elements: [
+    { key: "fire",  name: "Ember",  animal: "fox",   emoji: "🔥",
+      strength: "Drive", blurb: "Passion and momentum — you get started and keep going.",
+      c: { body: "#FF7A3C", belly: "#FFDCC2", dark: "#E24A1E", glow: "#FFB020", feat: "#FF5A2E" } },
+    { key: "earth", name: "Root",   animal: "bear",  emoji: "🌱",
+      strength: "Grit", blurb: "Grounded and persistent — you build things that last.",
+      c: { body: "#6FBF59", belly: "#DDF0CC", dark: "#3F8F3A", glow: "#9BE86F", feat: "#4CAF50" } },
+    { key: "water", name: "Ripple", animal: "otter", emoji: "💧",
+      strength: "Flow", blurb: "Adaptable and calm — you find a way around anything.",
+      c: { body: "#3FA9E0", belly: "#CFEBFB", dark: "#1F7FC0", glow: "#7FDFF5", feat: "#6FD0F0" } },
+    { key: "air",   name: "Gust",   animal: "owl",   emoji: "🌬️",
+      strength: "Curiosity", blurb: "Ideas and questions — you see what others miss.",
+      c: { body: "#8FC3EC", belly: "#EAF5FD", dark: "#5E95C8", glow: "#CFE8FA", feat: "#FFFFFF" } },
+    { key: "ether", name: "Nova",   animal: "star-deer", emoji: "✨",
+      strength: "Vision", blurb: "Purpose and imagination — the spirit of the Silicocene.",
+      c: { body: "#8A6FE0", belly: "#E9DEFB", dark: "#5E45B0", glow: "#C9A8FF", feat: "#F5C542" } }
+  ],
+  evoStages: [
+    { min: 0,  name: "Spark",     note: "just hatched" },
+    { min: 35, name: "Kindred",   note: "growing with you" },
+    { min: 75, name: "Ascended",  note: "fully evolved" }
+  ],
+  /* XP awarded at each moment of progress (totals ~100 across the journey). */
+  xp: { baseline: 15, milestone: 10, built: 15, tested: 15, exit: 25 },
+
   /* ---- Ready-made associates for an instant, reliable live demo.
      Real-feeling urban UK youth; baselines start low on agency. ---- */
   personas: [
-    { name: "Marcus", city: "Birmingham", age: 19,
+    { name: "Marcus", city: "Birmingham", age: 19, el: "fire",
       start: "Never really used AI — didn't think it was for someone like me",
       goal: "Start my own clothing brand",
       baseline: [3, 2, 2, 2, 1, 2] },
-    { name: "Amara", city: "London", age: 17,
+    { name: "Amara", city: "London", age: 17, el: "air",
       start: "Used ChatGPT a bit for college, but that's it",
       goal: "Get into a job in tech — I just don't know how",
       baseline: [3, 3, 2, 2, 2, 2] },
-    { name: "Kai", city: "Manchester", age: 20,
+    { name: "Kai", city: "Manchester", age: 20, el: "ether",
       start: "Not for people like me — I've got a record",
       goal: "Prove I can build something, and show my little brother it's possible",
       baseline: [2, 2, 2, 1, 1, 1] }
