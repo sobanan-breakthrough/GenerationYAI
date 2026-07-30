@@ -24,7 +24,9 @@
     toolChat: [],    // visible transcript with the built tool
     reflection: "",  // qualitative distance travelled (their own words)
     exitDone: false,
-    uplift: null
+    uplift: null,
+    // Career Navigator: AI-built context + generated routes
+    career: { started: false, motivations: [], needs: [], chat: [], context: null, routes: null }
   });
   let S = load();
 
@@ -116,6 +118,7 @@
     const h = location.hash || "#/";
     document.querySelectorAll(".topnav a").forEach(a => a.classList.remove("active"));
     if (h.startsWith("#/journey")) { markNav("journey"); renderJourney(); }
+    else if (h.startsWith("#/navigator")) { markNav("navigator"); renderNavigator(); }
     else if (h.startsWith("#/pathway")) { markNav("pathway"); renderPathway(); }
     else if (h.startsWith("#/funder")) { markNav("funder"); renderFunder(); }
     else { markNav("home"); renderHome(); }
@@ -244,7 +247,7 @@
         <aside class="rail">
           <div class="card creature-card" id="creatureCard"></div>
           <div class="card" style="padding:1rem;margin-top:1rem">
-            <span class="eyebrow">Your journey</span>
+            <span class="eyebrow">Your steps</span>
             <ul class="stepper" id="stepper"></ul>
           </div>
           <div class="meter-card" style="margin-top:1rem">
@@ -258,7 +261,7 @@
         <section class="panel fade-in" id="panel"></section>
       </div>
     </div>`;
-    document.getElementById("restartBtn").onclick = () => { if (confirm("Start the journey again from scratch?")) reset(); };
+    document.getElementById("restartBtn").onclick = () => { if (confirm("Start again from scratch? No stress — this just clears what you've done so far.")) reset(); };
     renderStepper();
     _shownStage = stageInfo(computeXP()).n;
     updateProgressUI();
@@ -297,7 +300,8 @@
     p.innerHTML = `
       <div class="step-eyebrow"><span class="eyebrow">Step 1 of 6 · Welcome</span></div>
       <h2>Let's start with you.</h2>
-      <p>No right answers here. This just helps your companion meet you where you are. You'll always be treated as an associate — a capable adult with something to build.</p>
+      <p>No right answers here, and nothing's being marked. This just helps your companion meet you where you are — you're a capable adult with something to build, and you'll be treated like one.</p>
+      <p class="privacy-line">🔒 This stays on your device. No one else sees it, and you can clear it anytime.</p>
 
       <div class="card demo-launcher no-print">
         <div class="flex flex-wrap" style="justify-content:space-between;align-items:baseline;gap:.5rem">
@@ -906,6 +910,240 @@ When all three are settled, also append [[READY]]. Never mention the tags or the
   }
 
   /* =====================================================================
+     CAREER NAVIGATOR — "Where next"
+     The AI builds context about the young person (their real motivations
+     and needs), shows it back live, then maps personalised routes.
+     ===================================================================== */
+  function renderNavigator() {
+    if (!S.career.started) return renderNavSetup();
+    return renderNavWork();
+  }
+
+  function renderNavSetup() {
+    app.innerHTML = `
+    <section class="hero">
+      <div class="wrap" style="display:block">
+        <span class="eyebrow">Career navigator</span>
+        <h1 style="max-width:20ch">Where next? Let's work it out together.</h1>
+        <p class="lede" style="max-width:56ch">No pressure, no CV needed. Start with what's real for you — and your companion works out routes that actually fit. You stay in control the whole way.</p>
+      </div>
+    </section>
+    <div class="wrap">
+      <div class="card pad-lg">
+        <span class="eyebrow">First — be honest</span>
+        <h2 style="margin:.2rem 0 .1rem">What's getting a job really about for you?</h2>
+        <p class="muted">Pick as many as feel true. There's no wrong answer.</p>
+        <div class="chipset" id="motivs">
+          ${D.motivations.map(m => `<button type="button" class="bigchip" data-k="${m.k}">${m.emoji} ${esc(m.label)}</button>`).join("")}
+        </div>
+        <div class="divider"></div>
+        <span class="eyebrow">And what does it need to fit around?</span>
+        <p class="muted" style="margin-top:.2rem">Optional — pick anything that matters. This stays private to you.</p>
+        <div class="chipset" id="needs">
+          ${D.needs.map(n => `<button type="button" class="chip2" data-k="${n.k}">${esc(n.label)}</button>`).join("")}
+        </div>
+        <div class="flex" style="justify-content:flex-end;margin-top:1.4rem">
+          <button class="btn btn-primary btn-lg" id="navStart" disabled>Map my routes →</button>
+        </div>
+      </div>
+    </div>`;
+
+    const selM = new Set(S.career.motivations), selN = new Set(S.career.needs);
+    const refresh = () => { document.getElementById("navStart").disabled = selM.size === 0; };
+    document.querySelectorAll("#motivs .bigchip").forEach(b => b.onclick = () => {
+      const k = b.dataset.k; b.classList.toggle("sel"); selM.has(k) ? selM.delete(k) : selM.add(k); refresh();
+    });
+    document.querySelectorAll("#needs .chip2").forEach(b => b.onclick = () => {
+      const k = b.dataset.k; b.classList.toggle("sel"); selN.has(k) ? selN.delete(k) : selN.add(k);
+    });
+    document.getElementById("navStart").onclick = () => {
+      S.career.motivations = [...selM]; S.career.needs = [...selN];
+      S.career.started = true;
+      const mLabels = D.motivations.filter(m => selM.has(m.k)).map(m => m.label);
+      const nLabels = D.needs.filter(n => selN.has(n.k)).map(n => n.label);
+      S.career.context = { drivers: mLabels, needs: nLabels, constraints: [], strengths: [], interests: [], situation: "", summary: "" };
+      save(); renderNavWork(); openNav();
+      window.scrollTo(0, 0);
+    };
+  }
+
+  const NAV_SYSTEM = () => `You are the GenerationYAI career navigator, made by Breakthrough Social Enterprise. You help a young person (an "associate") in the UK understand what they truly want from work, and map routes towards it. Many are NEET, some justice- or care-experienced.
+
+WHO: ${S.name || "the associate"}. They've told you their motivations: ${(S.career.context?.drivers || []).join(", ") || "unspecified"}. Things it needs to fit around: ${(S.career.context?.needs || []).join(", ") || "none given"}.
+
+HOW TO TALK: warm, real, completely non-judgemental. Plain modern British English, short (2–4 sentences), ONE question at a time. Never lecture, never sound like a jobcentre or a careers teacher. No hype, no jargon. Treat them as a capable adult.
+
+YOUR AIM: gently build a real picture of them — what drives them, what they need, what's in the way, what they're into, what they're quietly good at. Ask no more than ~4 focused questions in total; once you understand enough, tell them warmly that you can map their routes now.
+
+CONTEXT BUILDING (important): at the END of every reply, append a fenced block exactly like:
+\`\`\`context
+{"drivers":[...],"needs":[...],"constraints":[...],"strengths":[...],"interests":[...],"situation":"one short line","summary":"one short line about what they're really after"}
+\`\`\`
+Fill it with everything you understand SO FAR (merge, don't drop what you already knew). Keep arrays short and in their own words where you can. The associate never sees this block — only your normal reply.`;
+
+  function navApiMessages(extra) {
+    const first = `[The associate has just shared what getting work is about for them (${(S.career.context?.drivers || []).join(", ") || "unspecified"}) and what it needs to fit around (${(S.career.context?.needs || []).join(", ") || "nothing specified"}). Greet them warmly by name if known, reflect back what you're hearing in one line, and ask your FIRST gentle question to understand them better. Keep it short.]`;
+    const msgs = [{ role: "user", content: first }];
+    S.career.chat.forEach(m => msgs.push({ role: m.role, content: m.content }));
+    if (extra) msgs.push(extra);
+    return msgs;
+  }
+
+  function renderNavWork() {
+    app.innerHTML = `
+    <div class="wrap">
+      <div class="flex flex-wrap" style="justify-content:space-between;align-items:baseline;gap:.5rem">
+        <div><span class="eyebrow">Career navigator</span><h1 style="margin:.1rem 0;font-size:clamp(1.6rem,3vw,2.2rem)">Where next, ${esc(S.name || "let's see")}?</h1></div>
+        <button class="btn btn-ghost" id="navReset" style="font-size:.85rem">Start over</button>
+      </div>
+      <div class="nav-grid">
+        <div class="card" style="padding:1.2rem">
+          <div class="chat">
+            <div class="chat-log" id="nlog"></div>
+            <div class="composer">
+              <textarea id="nci" placeholder="Type your reply…" rows="1"></textarea>
+              <button class="btn btn-ghost mic" id="nmic" title="Talk instead of type" aria-label="Voice input">🎤</button>
+              <button class="btn btn-primary" id="nsend">Send</button>
+            </div>
+          </div>
+        </div>
+        <aside>
+          <div class="card context-card" id="ctxCard"></div>
+          <button class="btn btn-dark" id="showRoutes" style="width:100%;margin-top:1rem">Show my routes →</button>
+          <p class="muted" style="font-size:.8rem;text-align:center;margin-top:.5rem">You're in control — if anything's off, just say so in the chat.</p>
+        </aside>
+      </div>
+      <div id="routesOut"></div>
+    </div>`;
+
+    document.getElementById("navReset").onclick = () => { if (confirm("Clear your navigator and start over?")) { S.career = blank().career; save(); route(); } };
+    renderNavContext();
+    const nci = document.getElementById("nci");
+    nci.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendNav(); } });
+    nci.addEventListener("input", () => { nci.style.height = "auto"; nci.style.height = Math.min(nci.scrollHeight, 140) + "px"; });
+    document.getElementById("nsend").onclick = sendNav;
+    document.getElementById("showRoutes").onclick = mapRoutes;
+    wireMic("nmic", "nci");
+
+    if (S.career.chat.length === 0) { if (API.hasKey()) openNav(); else { openSettings(); addBubble("nlog", "ai", "Connect a Claude key (⚙ top right) and I'll help you work out where next.", "Navigator"); } }
+    else S.career.chat.forEach(m => addBubble("nlog", m.role === "assistant" ? "ai" : "user", stripMarkers(extractContext(m.content).reply), m.role === "assistant" ? "Navigator" : S.name));
+    if (S.career.routes) renderRoutes();
+  }
+
+  function extractContext(raw) {
+    let ctx = null, reply = raw;
+    const m = raw.match(/```(?:context|json)?\s*([\s\S]*?)```/i);
+    if (m) {
+      const body = m[1].trim();
+      try { ctx = JSON.parse(body); }
+      catch (_) { try { ctx = JSON.parse(body.slice(body.indexOf("{"), body.lastIndexOf("}") + 1)); } catch (__) {} }
+      reply = raw.replace(m[0], "").trim();
+    }
+    return { reply, context: ctx };
+  }
+
+  function renderNavContext() {
+    const c = S.career.context || {};
+    const box = document.getElementById("ctxCard");
+    if (!box) return;
+    const row = (label, arr) => (arr && arr.length) ? `<div class="ctx-row"><span class="ctx-k">${label}</span><div class="ctx-v">${arr.map(x => `<span class="tag">${esc(x)}</span>`).join("")}</div></div>` : "";
+    const line = (label, val) => val ? `<div class="ctx-row"><span class="ctx-k">${label}</span><div class="ctx-v"><span class="muted">${esc(val)}</span></div></div>` : "";
+    box.innerHTML = `
+      <div class="flex" style="justify-content:space-between;align-items:baseline">
+        <span class="eyebrow">What I understand about you</span>
+        <span class="ctx-live">● live</span>
+      </div>
+      ${c.summary ? `<p style="font-weight:600;margin:.5rem 0 .8rem">${esc(c.summary)}</p>` : `<p class="muted" style="margin:.5rem 0 .8rem">Filling in as we talk…</p>`}
+      ${row("What drives you", c.drivers)}
+      ${row("Needs to fit", c.needs)}
+      ${row("In the way", c.constraints)}
+      ${row("Strengths", c.strengths)}
+      ${row("Into", c.interests)}
+      ${line("Right now", c.situation)}`;
+  }
+
+  async function openNav() {
+    const t = addTyping("nlog");
+    try {
+      const raw = await API.chat(navApiMessages(), { system: NAV_SYSTEM(), temperature: 0.7, max_tokens: 450 });
+      t.remove(); handleNavReply(raw);
+    } catch (err) { t.remove(); addBubble("nlog", "ai", API.friendly(err), "Navigator"); }
+  }
+
+  async function sendNav() {
+    const nci = document.getElementById("nci"); const text = nci.value.trim(); if (!text) return;
+    if (!API.hasKey()) { openSettings(); return; }
+    nci.value = ""; nci.style.height = "auto";
+    document.getElementById("nsend").disabled = true;
+    addBubble("nlog", "user", text, S.name); S.career.chat.push({ role: "user", content: text }); save();
+    const t = addTyping("nlog");
+    try {
+      const raw = await API.chat(navApiMessages(), { system: NAV_SYSTEM(), temperature: 0.7, max_tokens: 450 });
+      t.remove(); handleNavReply(raw);
+    } catch (err) { t.remove(); addBubble("nlog", "ai", API.friendly(err), "Navigator"); }
+    finally { document.getElementById("nsend").disabled = false; document.getElementById("nci").focus(); }
+  }
+
+  function handleNavReply(raw) {
+    const { reply, context } = extractContext(raw);
+    if (context) { S.career.context = Object.assign({}, S.career.context, context); }
+    S.career.chat.push({ role: "assistant", content: raw }); save();
+    addBubble("nlog", "ai", reply || "…", "Navigator");
+    renderNavContext();
+  }
+
+  const ROUTES_SYSTEM = `You map realistic UK routes into work, learning or enterprise for a young person (an "associate") from what's known about them. Output ONLY a JSON array (2–4 items), no prose, no code fences. Each item:
+{"title":"short route name","tag":"income|earnlearn|learnfirst|buildown|steady","why":"1–2 sentences on why THIS fits THEM, referencing their drivers/needs in a warm, non-patronising way","steps":["3–4 concrete first actions, each short and doable this week/month"],"timeframe":"realistic e.g. 'earning in ~4–8 weeks'","payoff":"what they get"}.
+Be concrete and honest (name real UK options: apprenticeships/traineeships, Universal Credit-compatible work, free Skills Bootcamps, self-employment). Where a learn-first route fits, mention Breakthrough's free AI Skills Bootcamp. British English. No jargon, no hype.`;
+
+  async function mapRoutes() {
+    if (!API.hasKey()) { openSettings(); return; }
+    const btn = document.getElementById("showRoutes");
+    btn.disabled = true; btn.textContent = "Mapping your routes…";
+    const ctx = JSON.stringify(S.career.context || {});
+    try {
+      const raw = await API.chat(
+        [{ role: "user", content: `Here is what we know about the associate (name: ${S.name || "unknown"}):\n${ctx}\nMap their routes now.` }],
+        { system: ROUTES_SYSTEM, temperature: 0.5, max_tokens: 900 }
+      );
+      const s = raw.indexOf("["), e = raw.lastIndexOf("]");
+      S.career.routes = JSON.parse(raw.slice(s, e + 1));
+      save(); renderRoutes();
+      document.getElementById("routesOut").scrollIntoView({ behavior: "smooth", block: "start" });
+    } catch (err) {
+      addBubble("nlog", "ai", API.friendly(err), "Navigator");
+    } finally { btn.disabled = false; btn.textContent = "Show my routes →"; }
+  }
+
+  function renderRoutes() {
+    const arch = {}; D.routeArchetypes.forEach(a => arch[a.k] = a);
+    const box = document.getElementById("routesOut");
+    if (!box || !S.career.routes) return;
+    box.innerHTML = `
+      <div class="section-head mt-2"><span class="eyebrow">Your routes · mapped from what you told me</span>
+      <h2>Here's where you could go next.</h2>
+      <p class="muted">Not one fixed path — options that fit you. Pick one to start; you can always change lane.</p></div>
+      <div class="grid grid-2">
+        ${S.career.routes.map((r, i) => `
+          <div class="card route-card">
+            <div class="route-top"><span class="route-num">${i + 1}</span><span class="phase-tag">${esc((arch[r.tag] || {}).title || r.tag || "route")}</span></div>
+            <h3 style="margin:.4rem 0 .3rem">${esc(r.title || "A route")}</h3>
+            <p style="margin:0 0 .7rem">${esc(r.why || "")}</p>
+            ${Array.isArray(r.steps) ? `<div class="route-steps">${r.steps.map(s => `<div class="rstep"><span class="check">✓</span><span>${esc(s)}</span></div>`).join("")}</div>` : ""}
+            <div class="route-foot">
+              <span class="agency-chip">${esc(r.timeframe || "")}</span>
+              ${r.payoff ? `<span class="muted" style="font-size:.85rem">${esc(r.payoff)}</span>` : ""}
+            </div>
+          </div>`).join("")}
+      </div>
+      <div class="card card-flat center mt-2">
+        <h3 class="mb-0">Like one of these?</h3>
+        <p class="muted">Your first real skill-win backs up any route you pick.</p>
+        <a class="btn btn-primary" href="#/journey">Build your first AI tool →</a>
+      </div>`;
+  }
+
+  /* =====================================================================
      PATHWAY — a companion for the journey into adulthood + Silicocene
      ===================================================================== */
   function renderPathway() {
@@ -952,7 +1190,7 @@ When all three are settled, also append [[READY]]. Never mention the tags or the
         </div>
       </div>
 
-      <div class="belief mt-2" style="background:var(--ink)">
+      <div class="belief mt-2" style="background:var(--panel)">
         <span class="eyebrow" style="color:rgba(255,255,255,.6)">The thinking underneath · the Silicocene</span>
         <p class="big" style="max-width:40ch">“${esc(s.invitation)}”</p>
         <p style="color:rgba(255,255,255,.72);margin:0 0 .2rem;max-width:52ch">${esc(s.definition)}</p>
@@ -1011,7 +1249,7 @@ When all three are settled, also append [[READY]]. Never mention the tags or the
       </div>
 
       <div class="grid grid-2 mt-2">
-        <div class="belief" style="background:var(--ink)">
+        <div class="belief" style="background:var(--panel)">
           <span class="eyebrow" style="color:rgba(255,255,255,.6)">Illustrative social-value proxy</span>
           <div class="n" style="font-size:2.8rem;font-weight:800;color:var(--yellow);line-height:1">${svStr}</div>
           <p class="muted" style="color:rgba(255,255,255,.72);margin:.4rem 0 0">Estimated social value generated by this cohort, from progression and sustained engagement. ${esc(D.proxy.label)}</p>
@@ -1137,6 +1375,20 @@ When all three are settled, also append [[READY]]. Never mention the tags or the
     keyInput.focus();
   }
   function closeSettings() { modal.hidden = true; }
+
+  /* Theme toggle (dark is default; light is opt-in) */
+  function applyThemeIcon() {
+    const light = document.documentElement.getAttribute("data-theme") === "light";
+    const b = document.getElementById("themeBtn");
+    if (b) { b.textContent = light ? "☀" : "☾"; b.title = light ? "Switch to dark" : "Switch to light"; }
+  }
+  document.getElementById("themeBtn").onclick = () => {
+    const light = document.documentElement.getAttribute("data-theme") === "light";
+    if (light) { document.documentElement.removeAttribute("data-theme"); try { localStorage.setItem("gy_theme", "dark"); } catch (e) {} }
+    else { document.documentElement.setAttribute("data-theme", "light"); try { localStorage.setItem("gy_theme", "light"); } catch (e) {} }
+    applyThemeIcon();
+  };
+  applyThemeIcon();
 
   document.getElementById("settingsBtn").onclick = openSettings;
   document.getElementById("settingsClose").onclick = closeSettings;

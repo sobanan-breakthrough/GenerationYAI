@@ -166,6 +166,36 @@ window.GY_DATA = {
   /* XP awarded at each moment of progress (totals ~100 across the journey). */
   xp: { baseline: 15, milestone: 10, built: 15, tested: 15, exit: 25 },
 
+  /* ---- CAREER NAVIGATOR: motivations, needs, and route archetypes.
+     The AI builds context from these + conversation, then maps routes. ---- */
+  motivations: [
+    { k: "money",        emoji: "💷", label: "Money in my pocket" },
+    { k: "independence", emoji: "🔑", label: "My own independence" },
+    { k: "prove",        emoji: "💪", label: "Prove I can do it" },
+    { k: "family",       emoji: "👨‍👩‍👧", label: "Support my family" },
+    { k: "structure",    emoji: "🌅", label: "Structure — get out the house" },
+    { k: "purpose",      emoji: "❤️", label: "Do something I care about" },
+    { k: "freshstart",   emoji: "🌱", label: "A fresh start" },
+    { k: "unsure",       emoji: "🤔", label: "Not sure yet — help me work it out" }
+  ],
+  needs: [
+    { k: "soon",     label: "Money coming in soon" },
+    { k: "flexible", label: "Flexible hours" },
+    { k: "local",    label: "Close to home or remote" },
+    { k: "noexp",    label: "No experience needed" },
+    { k: "wellbeing",label: "Works around my head" },
+    { k: "caring",   label: "Around looking after someone" },
+    { k: "nocv",     label: "I haven't got a CV yet" }
+  ],
+  /* Archetypes the AI draws on when mapping routes (it personalises these). */
+  routeArchetypes: [
+    { k: "income",  title: "Get earning soon", note: "roles you can start with little/no experience" },
+    { k: "earnlearn", title: "Earn while you learn", note: "apprenticeships & traineeships — wage + a qualification" },
+    { k: "learnfirst", title: "Build skills first", note: "short free courses like our AI Skills Bootcamp, then apply" },
+    { k: "buildown", title: "Build your own thing", note: "self-employment, a brand, freelancing, content" },
+    { k: "steady",  title: "Steady yourself first", note: "proper support around you, so the rest can follow" }
+  ],
+
   /* ---- Ready-made associates for an instant, reliable live demo.
      Real-feeling urban UK youth; baselines start low on agency. ---- */
   personas: [
