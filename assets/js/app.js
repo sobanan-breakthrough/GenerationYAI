@@ -59,6 +59,7 @@
     const h = location.hash || "#/";
     document.querySelectorAll(".topnav a").forEach(a => a.classList.remove("active"));
     if (h.startsWith("#/journey")) { markNav("journey"); renderJourney(); }
+    else if (h.startsWith("#/pathway")) { markNav("pathway"); renderPathway(); }
     else if (h.startsWith("#/funder")) { markNav("funder"); renderFunder(); }
     else { markNav("home"); renderHome(); }
     window.scrollTo(0, 0);
@@ -644,8 +645,25 @@ When all three are settled, also append [[READY]]. Never mention the tags or the
     document.getElementById("tsend").onclick = sendTool;
     wireMic("tmic", "tci");
 
-    if (S.toolChat.length === 0) openTool();
+    if (S.toolChat.length === 0) { celebrate(); openTool(); }
     else S.toolChat.forEach(m => addBubble("tlog", m.role === "assistant" ? "ai tool" : "user", m.content, m.role === "assistant" ? S.tool.name : S.name));
+  }
+
+  /* A brief, tasteful confetti burst for the "I built this" moment. */
+  function celebrate() {
+    const colors = ["#FFD000", "#1A1A17", "#1F8A5B", "#FFE87A"];
+    const wrap = document.createElement("div");
+    wrap.className = "confetti";
+    for (let i = 0; i < 40; i++) {
+      const c = document.createElement("i");
+      const left = 8 + (i * 83) % 84;          // deterministic spread (no Math.random)
+      const delay = (i % 10) * 40;
+      const dur = 1400 + (i % 6) * 220;
+      c.style.cssText = `left:${left}%;background:${colors[i % 4]};animation-delay:${delay}ms;animation-duration:${dur}ms;transform:rotate(${(i * 47) % 360}deg)`;
+      wrap.appendChild(c);
+    }
+    document.body.appendChild(wrap);
+    setTimeout(() => wrap.remove(), 2600);
   }
 
   async function openTool() {
@@ -807,6 +825,66 @@ When all three are settled, also append [[READY]]. Never mention the tags or the
       btn.disabled = false; btn.textContent = "✍️ Write a line for my CV about this";
       box.innerHTML = `<div class="notice warn">${esc(API.friendly(err))}</div>`;
     }
+  }
+
+  /* =====================================================================
+     PATHWAY — a companion for the journey into adulthood + Silicocene
+     ===================================================================== */
+  function renderPathway() {
+    const s = D.silicocene, cur = D.curriculum;
+    app.innerHTML = `
+    <section class="hero">
+      <div class="wrap" style="display:block">
+        <span class="eyebrow">More than a course · a companion for the journey</span>
+        <h1 style="max-width:24ch">It doesn't stop at one tool. It grows with you.</h1>
+        <p class="lede" style="max-width:58ch">GenerationYAI isn't a one-off intervention. It's a companion that stays with a young person as they grow into adulthood — from a first win, to fluency, to work, to a life they're steering. Learn by building, ethics woven through, the whole person supported.</p>
+      </div>
+    </section>
+
+    <div class="wrap">
+      <ol class="timeline">
+        ${D.pathway.map(p => `
+          <li class="tl ${p.now ? "tl-now" : ""}">
+            <div class="tl-node">${p.stage}</div>
+            <div class="tl-body card">
+              <div class="flex flex-wrap" style="justify-content:space-between;align-items:baseline;gap:.4rem">
+                <h3 class="mb-0">${esc(p.title)}</h3>
+                ${p.now ? `<span class="pill"><span class="dot"></span> The demo starts here</span>` : `<span class="phase-tag">${esc(p.phase)}</span>`}
+              </div>
+              <p style="margin:.5rem 0 .6rem">${esc(p.what)}</p>
+              <span class="agency-chip">Builds: ${esc(p.agency)}</span>
+            </div>
+          </li>`).join("")}
+      </ol>
+
+      <div class="card card-flat center mt-2">
+        <h3 class="mb-0">Start at stage one.</h3>
+        <p class="muted">Every journey begins with a first win. Take the one the panel would watch.</p>
+        <a class="btn btn-primary" href="#/journey">Build your first AI tool →</a>
+      </div>
+
+      <div class="card mt-2">
+        <div class="flex flex-wrap" style="justify-content:space-between;align-items:baseline;gap:.5rem">
+          <div><span class="eyebrow">Not a prototype pretending · grounded in what we already deliver</span><h3 class="mb-0">The curriculum behind it: ${esc(cur.name)}</h3></div>
+          <span class="pill"><span class="dot"></span> Already running</span>
+        </div>
+        <p class="muted">${esc(cur.meta)}. GenerationYAI turns a curriculum Breakthrough already delivers to associates into a companion that can scale it.</p>
+        <div class="modgrid">
+          ${cur.modules.map((m, i) => `<div class="mod"><span class="mod-n">${String(i + 1).padStart(2, "0")}</span>${esc(m)}</div>`).join("")}
+        </div>
+      </div>
+
+      <div class="belief mt-2" style="background:var(--ink)">
+        <span class="eyebrow" style="color:rgba(255,255,255,.6)">The thinking underneath · the Silicocene</span>
+        <p class="big" style="max-width:40ch">“${esc(s.invitation)}”</p>
+        <p style="color:rgba(255,255,255,.72);margin:0 0 .2rem;max-width:52ch">${esc(s.definition)}</p>
+        <p class="muted" style="color:rgba(255,255,255,.55);margin:.6rem 0 0;font-size:.82rem">${esc(s.attribution)}</p>
+        <hr class="divider" style="background:rgba(255,255,255,.15)">
+        <div class="grid grid-2">
+          ${s.principles.map(pr => `<div class="flex" style="align-items:flex-start;gap:.6rem"><span class="check">✦</span><div><strong style="color:#fff;font-size:.95rem">${esc(pr.t)}</strong><div style="color:rgba(255,255,255,.7);font-size:.88rem">${esc(pr.d)}</div></div></div>`).join("")}
+        </div>
+      </div>
+    </div>`;
   }
 
   /* =====================================================================

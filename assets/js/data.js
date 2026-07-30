@@ -165,6 +165,64 @@ window.GY_DATA = {
     "A budgeting buddy"
   ],
 
+  /* ---- SILICOCENE: the philosophy underneath the product.
+     From "The Silicocene: A New Epoch in History" by Sobanan Narenthiran (2024). ---- */
+  silicocene: {
+    definition: "The epoch after the Anthropocene. Where the last age was defined by extraction — of resources, of labour, of human potential — the Silicocene can be defined by co-evolution, ethics and collective empowerment.",
+    invitation: "If intelligence is no longer scarce, if energy can be clean, if knowledge can be free — what excuse remains for leaving anyone behind?",
+    attribution: "From The Silicocene: A New Epoch in History, by Sobanan Narenthiran, Breakthrough's founder — who first learned about the future of technology from a prison cell. It is not a prediction. It is an invitation.",
+    principles: [
+      { t: "Technology is never neutral", d: "It always lands somewhere, on someone. For those with capital and networks each wave is a ladder; for those without, a wall. We change who it lands on." },
+      { t: "Equity is a precondition, not charity", d: "In the Silicocene, including the excluded isn't a nice-to-have added at the end — it's a design requirement from the start." },
+      { t: "You don't need to live in Silicon Valley", d: "From a block in London to an estate in Manchester — the future belongs to builders everywhere, not just a postcode." },
+      { t: "Where job skills meet soul skills", d: "Technological fluency and inner work — purpose, resilience, values — grow together. We equip the whole person, not just the worker." }
+    ]
+  },
+
+  /* ---- THE PATHWAY: GenerationYAI grows with a young person, from a
+     first win into adulthood. Mapped to the four-phase arc that runs through
+     Breakthrough's real programmes: Foundation → Fluency → Application →
+     Transition — plus the whole-person support that surrounds it. ---- */
+  pathway: [
+    { stage: "01", title: "Meet you where you are", now: true, phase: "Foundation",
+      what: "Purpose first. Like week one of our bootcamp — Ikigai, a letter to your future self, a personal plan — then your first real win: build an AI tool that's yours, and watch \"this isn't for me\" become \"I built this.\"",
+      agency: "Belief that you can start." },
+    { stage: "02", title: "Fluency & ethics", phase: "Core learning",
+      what: "Real fluency with AI: prompt and context engineering, generative AI and branding — and how to question it. AI ethics runs throughout, co-designed with IBM and CGI, so you lead the technology, not the other way round.",
+      agency: "Judgement — you direct AI, and you know your rights." },
+    { stage: "03", title: "Build a body of work", phase: "Application",
+      what: "Automations, marketing and content, real projects that matter to you — collected into a portfolio you own. Learn by building something real, not by watching lessons.",
+      agency: "Proof — evidence of what you can do." },
+    { stage: "04", title: "Work-ready", phase: "Transition",
+      what: "Strategy and business planning, pitching with AI and human connection, CV audits and mock interviews with real employers — and a progress passport that speaks for you.",
+      agency: "Readiness — you can walk into the room." },
+    { stage: "05", title: "Into opportunity", phase: "Transition",
+      what: "Presentation day, then a next step you chose: genuine apprenticeships and jobs with real employers, or support to start your own thing.",
+      agency: "Momentum — you're moving." },
+    { stage: "06", title: "For life, not one programme", phase: "Belonging",
+      what: "Money, wellbeing and navigating adult systems — the inner work for outer change. And the door stays open: 95%+ of associates stay in the community, and around a third of our team first came through it.",
+      agency: "Belonging — you're not on your own." }
+  ],
+
+  /* ---- The real, delivered curriculum behind the product.
+     Breakthrough's AI Skills Bootcamp — a UK Skills Bootcamp provision. ---- */
+  curriculum: {
+    name: "AI Skills Bootcamp",
+    meta: "A real, delivered UK Skills Bootcamp · 10 weeks · learn-by-building · ethics throughout",
+    modules: [
+      "AI foundations & personal planning",
+      "Prompt & context engineering",
+      "Generative AI & branding",
+      "AI ethics (co-designed with IBM & CGI)",
+      "AI automations & productivity",
+      "AI in marketing & content",
+      "Strategy & business planning with AI",
+      "Pitching with AI & human connection",
+      "Careers & employability",
+      "Presentation day & progression"
+    ]
+  },
+
   /* ---- Measurement rigour: how we measure agency ---- */
   methodology: [
     { t: "A self-efficacy scale", d: "Six items adapted from established general self-efficacy research — the belief you can act and reach goals, a validated driver of social mobility." },
