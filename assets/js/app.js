@@ -116,7 +116,9 @@
   /* ---------------- Router ---------------- */
   function route() {
     const h = location.hash || "#/";
-    document.querySelectorAll(".topnav a").forEach(a => a.classList.remove("active"));
+    const modal = document.getElementById("settingsModal");
+    if (modal && !modal.hidden) modal.hidden = true;   // close settings on navigation
+    document.querySelectorAll("[data-nav]").forEach(a => a.classList.remove("active"));
     if (h.startsWith("#/journey")) { markNav("journey"); renderJourney(); }
     else if (h.startsWith("#/navigator")) { markNav("navigator"); renderNavigator(); }
     else if (h.startsWith("#/pathway")) { markNav("pathway"); renderPathway(); }
@@ -124,7 +126,7 @@
     else { markNav("home"); renderHome(); }
     window.scrollTo(0, 0);
   }
-  function markNav(k) { const a = document.querySelector(`.topnav a[data-nav="${k}"]`); if (a) a.classList.add("active"); }
+  function markNav(k) { document.querySelectorAll(`[data-nav="${k}"]`).forEach(a => a.classList.add("active")); }
   window.addEventListener("hashchange", route);
 
   /* =====================================================================
